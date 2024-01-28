@@ -1,5 +1,6 @@
 project.4coder
 build
+ship_files
 
 *.pdb
 *.llk

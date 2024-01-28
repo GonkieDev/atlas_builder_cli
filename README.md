@@ -13,6 +13,7 @@ Still WIP.
 - Check if output path exists before everything
 - Check if output file already exists and give warning/change name
 - pass image extensions as a parameter
+- add arguments to build.bat (RELEASE or DEBUG)
 
 #### Depencies/Libs for building from source
 - `stb_image.h` and `stb_image_write.h` are used and come with the repo

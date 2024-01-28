@@ -17,7 +17,7 @@
 
 ///////////////////////////////////
 //~ Types
-read_only Vec2S32 defaultAtlasSize = { 1000, 1000 };
+read_only Vec2S32 defaultAtlasSize = { 500, 500 };
 read_only char *defaultImgExtensions[] = { ".png", ".jpg", ".jpeg", ".bmp" };
 read_only u32 defaultImgExtensionsCount = ArrayCount(defaultImgExtensions);
 
