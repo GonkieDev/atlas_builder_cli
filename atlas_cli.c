@@ -17,6 +17,10 @@
 
 ///////////////////////////////////
 //~ Types
+read_only Vec2S32 defaultAtlasSize = { 1000, 1000 };
+read_only char *defaultImgExtensions[] = { ".png", ".jpg", ".jpeg", ".bmp" };
+read_only u32 defaultImgExtensionsCount = ArrayCount(defaultImgExtensions);
+
 typedef struct FileInfoNode FileInfoNode;
 struct FileInfoNode
 {
@@ -117,6 +121,10 @@ GetAllFilesFromDirAndSubdirs(M_Arena *arena, char *searchDir, FileInfoList *file
             }
             while (OS_FileIterGetNextFile(scratch.arena, iterHandle, &fileInfo));
         }
+        else
+        {
+            printf("%s does not exist.\n", searchDir);
+        }
         // TODO(gsp): close handle
     }
 }
@@ -131,25 +139,127 @@ ImageAtlasMake(M_Arena *arena, Vec2S32 size)
     return imageAtlas;
 }
 
+void
+PrintUsage(void)
+{
+    printf("Usage: atlas_cli.exe 'input/path' [-d x y | -o ./my/output/path]\n");
+}
+
+void
+PrintHelp(void)
+{
+    printf("Help:\n");
+    PrintUsage();
+    printf("\t'-h' to print help.\n");
+    printf("\t'-d' to specify dimensions. e.g. '-d 2000 2000' creates a 2000 by 2000 atlas. Default is %d by %d.\n", defaultAtlasSize.x, defaultAtlasSize.y);
+    printf("\t'-o' to specify output path. e.g. '-o ./my_atlas.png'. Default is 'atlas.png'\n");
+    printf("atlas_cli will look for any files that end in: ");
+    for (u32 i = 0; i < defaultImgExtensionsCount; ++i)
+    {
+        printf("%s ", defaultImgExtensions[i]);
+    }
+    printf("\n");
+}
+
 int
-main(void)
+main(int argc, char **argv)
 {
     //- Init
     InitMainThreadContext();
     M_ArenaTemp scratch = GetScratch(0, 0);
     
-    //- Settings
-    char *searchDir = "../../test_sprites/";
-    Vec2S32 atlasSize = V2S32(2000, 2000);
-    char *imgExtensions[] = { ".png", ".jpg", ".jpeg", ".bmp" };
-    u32 imgExtensionsCount = ArrayCount(imgExtensions);
+    //- Default settings
+    char *searchDir = 0;
     char *outFilepath = "./atlas.png";
+    
+    Vec2S32 atlasSize = defaultAtlasSize;
+    char **imgExtensions = defaultImgExtensions;
+    u32 imgExtensionsCount = defaultImgExtensionsCount;
+    
+    //- CLI inputs
+    enum
+    {
+        CLI_InputPath,
+        CLI_OutputPath,
+        CLI_Dims,
+        CLI_Help,
+        
+        CLI_COUNT
+    };
+    
+    char *cliFlags[CLI_COUNT] = {
+        [CLI_InputPath]  = "",
+        [CLI_OutputPath] = "-o",
+        [CLI_Dims] = "-d",
+        [CLI_Help] = "-h",
+    };
+    
+    b32 printHelp = 0;
+    
+    u32 flagType = CLI_InputPath;
+    for (i32 i = 1; i < argc; ++i)
+    {
+        char *arg = argv[i];
+        
+        b32 argIsFlag = 0;
+        for (u32 argTypeIdx = 1; argTypeIdx < CLI_COUNT; ++argTypeIdx)
+        {
+            char *cliFlag = cliFlags[argTypeIdx];
+            if (strcmp(cliFlag, arg) == 0)
+            {
+                flagType = argTypeIdx;
+                argIsFlag = 1;
+                break;
+            }
+        }
+        
+        if (flagType == CLI_Help)
+        {
+            printHelp = 1;
+            break;
+        }
+        
+        if (argIsFlag) continue;
+        
+        switch (flagType)
+        {
+            case CLI_InputPath:
+            {
+                searchDir = arg;
+            }break;
+            
+            case CLI_OutputPath:
+            {
+                outFilepath = arg;
+            }break;
+            
+            case CLI_Dims:
+            {
+                // TODO(gsp): dims
+            }break;
+        }
+        
+        flagType = CLI_InputPath;
+    }
+    
+    if (printHelp)
+    {
+        PrintHelp();
+        return 0;
+    }
+    
+    if (!searchDir)
+    {
+        printf("Directory to search not provided.\n");
+        PrintUsage();
+        return 0;
+    }
     
     //- Initial prints
     printf("Sprite CLI !\n");
     
     printf("Settings:\n");
-    printf("\tDir: %s\n", searchDir);
+    printf("\tInput directory: %s\n", searchDir);
     printf("\tAtlas size: %dx%d\n", atlasSize.x, atlasSize.y);
     printf("\tOutput file path: %s\n", outFilepath);
     printf("\tFile extensions allowed: ");
@@ -166,6 +276,7 @@ main(void)
     // NOTE(gsp): get all files in subdir
     FileInfoList infoList = {0};
     GetAllFilesFromDirAndSubdirs(scratch.arena, searchDir, &infoList);
+    u32 imagesCount = 0;
     
     for (FileInfoNode *node = infoList.first; node != 0; node = node->next)
     {
@@ -209,8 +320,16 @@ main(void)
                 PixelRGBA *src = pixels + width*y;
                 MemoryCopy(dst, src, regionDims.x * sizeof(PixelRGBA));
             }
+            
+            imagesCount++;
         }
         stbi_image_free(pixels);
+    }
+    
+    if (!imagesCount)
+    {
+        printf("Could not find any images.\n");
+        return 0;
     }
     
     //- output to file

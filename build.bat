@@ -10,11 +10,17 @@ if not exist "%outputDir%" mkdir "%outputDir%"
 pushd "%outputDir%"
 
 set debug_compiler_opts=/Od /Zi /DBUILD_DEBUG /Fd /Fm /Fo
-set compiler_opts=%debug_compiler_opts%
 
 REM /wd4127 - conditional expression is constant
+REM /wd5045 - spectre stuff
 
-cl ..\sprite_atlas_cli.c /Wall /wd4127 /wd5045 %compiler_opts% /nologo /std:c11 /FC /link user32.lib /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
+set compiler_opts=/Wall /wd4127 /wd5045 /nologo /std:c11 /FC /Featlas_cli.exe
+REM set compiler_opts=%compiler_opts% %debug_compiler_opts%
+set compiler_opts=%compiler_opts% /O2 /wd4711 /wd4710
+
+set linker_opts=user32.lib /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
+
+cl ..\atlas_cli.c %compiler_opts% /link %linker_opts%
 
 popd
 popd

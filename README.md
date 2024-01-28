@@ -7,14 +7,17 @@ Still WIP.
 - Works on Windows only for now
 
 ## TODO:
-- Actual CLI inputs
 - Handle case where more than one X by Y atlas is needed
 - Linux/Mac support
-- Make own `string.h`
+- Use own `string.h`
+- Check if output path exists before everything
+- Check if output file already exists and give warning/change name
+- pass image extensions as a parameter
 
-#### Depencies/Libs for building
+#### Depencies/Libs for building from source
 - `stb_image.h` and `stb_image_write.h` are used and come with the repo
 - stdlib
+- `windows.h` on windows
 
 #### Credits
 - `github.com/nothings` for `stb_image`
