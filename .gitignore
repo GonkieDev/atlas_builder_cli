@@ -1,2 +1,9 @@
 project.4coder
 build
+
+*.pdb
+*.llk
+*.ilk
+*.obj
+*.map
+*.exe

@@ -9,7 +9,9 @@ set outputDir=build
 if not exist "%outputDir%" mkdir "%outputDir%"
 pushd "%outputDir%"
 
-cl ..\sprite_atlas_cli.c /nologo /std:c11 /FC /link user32.lib /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
+set debug_compiler_opts=/Od /Zi /DBUILD_DEBUG /Fd /Fm /Fo
+set compiler_opts=%debug_compiler_opts%
+cl ..\sprite_atlas_cli.c %compiler_opts% /nologo /std:c11 /FC /link user32.lib /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
 
 popd
 popd
