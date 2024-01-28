@@ -11,7 +11,10 @@ pushd "%outputDir%"
 
 set debug_compiler_opts=/Od /Zi /DBUILD_DEBUG /Fd /Fm /Fo
 set compiler_opts=%debug_compiler_opts%
-cl ..\sprite_atlas_cli.c %compiler_opts% /nologo /std:c11 /FC /link user32.lib /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
+
+REM /wd4127 - conditional expression is constant
+
+cl ..\sprite_atlas_cli.c /Wall /wd4127 /wd5045 %compiler_opts% /nologo /std:c11 /FC /link user32.lib /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
 
 popd
 popd

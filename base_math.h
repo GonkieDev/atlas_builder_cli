@@ -48,6 +48,8 @@ SideVertexFromCorner32(Corner corner)
     Vec2S32 result = {0};
     switch(corner)
     {
+        case Corner_COUNT:
+        case Corner_Invalid:
         default: break;
         case Corner_00:{result = V2S32(0, 0);}break;
         case Corner_01:{result = V2S32(0, 1);}break;

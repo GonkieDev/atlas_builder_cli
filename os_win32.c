@@ -66,7 +66,7 @@ OS_W32_FillFileInfo(M_Arena *arena, WIN32_FIND_DATAA *ffd, OS_FileInfo *outFileI
     MemoryZeroStruct(outFileInfo);
     
     outFileInfo->filenameLen = strlen(ffd->cFileName);
-    outFileInfo->filename = M_PushArray(arena, u8, outFileInfo->filenameLen+1);
+    outFileInfo->filename = M_PushArray(arena, char, outFileInfo->filenameLen+1);
     MemoryCopy(outFileInfo->filename, ffd->cFileName, outFileInfo->filenameLen);
     if (FILE_ATTRIBUTE_DIRECTORY & ffd->dwFileAttributes)
         outFileInfo->isDir = 1;
@@ -80,8 +80,8 @@ OS_FileIterStart(M_Arena *arena, char *searchDir, OS_Handle *outIterHandle, OS_F
     {
         char *searchDirFormatted = 0;
         {
-            u32 searchDirLen = strlen(searchDir);
-            searchDirFormatted = M_PushArray(scratch.arena, u8, searchDirLen + 2);
+            u64 searchDirLen = strlen(searchDir);
+            searchDirFormatted = M_PushArray(scratch.arena, char, searchDirLen + 2);
             MemoryCopy(searchDirFormatted, searchDir, searchDirLen);
             searchDirFormatted[searchDirLen] = '*';
         }
@@ -120,5 +120,6 @@ OS_FileIterGetNextFile(M_Arena *arena, OS_Handle iterHandle, OS_FileInfo *outFil
 function void
 OS_FileIterEnd(OS_Handle iterHandle)
 {
-    
+    // TODO(gsp): file iter end os
+    UnreferencedParameter(iterHandle);
 }

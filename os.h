@@ -12,8 +12,9 @@ typedef struct
 typedef struct
 {
     char *filename; // allocated in arena
-    u32   filenameLen;
+    u64   filenameLen;
     b32   isDir;
+    b32   __pad;
 } OS_FileInfo;
 
 //////////////////////
