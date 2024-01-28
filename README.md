@@ -15,3 +15,7 @@ Still WIP.
 #### Depencies/Libs for building
 - `stb_image.h` and `stb_image_write.h` are used and come with the repo
 - stdlib
+
+#### Credits
+- `github.com/nothings` for `stb_image`
+- Ryan Fleury for atlas algorithm
