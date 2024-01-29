@@ -15,8 +15,12 @@ REM /wd4127 - conditional expression is constant
 REM /wd5045 - spectre stuff
 
 set compiler_opts=/Wall /wd4127 /wd5045 /nologo /std:c11 /FC /Featlas_cli.exe
-REM set compiler_opts=%compiler_opts% %debug_compiler_opts%
-set compiler_opts=%compiler_opts% /O2 /wd4711 /wd4710
+
+REM debug opts
+set compiler_opts=%compiler_opts% %debug_compiler_opts%
+
+REM release opts
+REM set compiler_opts=%compiler_opts% /O2 /wd4711 /wd4710
 
 set linker_opts=user32.lib /INCREMENTAL:NO /SUBSYSTEM:CONSOLE
 

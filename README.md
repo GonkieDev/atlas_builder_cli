@@ -1,7 +1,7 @@
 # Sprite Atlas CLI Utility
 
+This is something I did quickly on an afternoon so it's still very WIP.
 Converts all images in a given path to an atlas.
-Still WIP.
 
 ## Platforms
 - Works on Windows only for now
@@ -14,6 +14,7 @@ Still WIP.
 - Check if output file already exists and give warning/change name
 - pass image extensions as a parameter
 - add arguments to build.bat (RELEASE or DEBUG)
+- better atlas algorithm
 
 #### Depencies/Libs for building from source
 - `stb_image.h` and `stb_image_write.h` are used and come with the repo

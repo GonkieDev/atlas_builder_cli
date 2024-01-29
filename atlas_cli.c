@@ -17,7 +17,7 @@
 
 ///////////////////////////////////
 //~ Types
-read_only Vec2S32 defaultAtlasSize = { 500, 500 };
+read_only Vec2S32 defaultAtlasSize = { 512, 512 };
 read_only char *defaultImgExtensions[] = { ".png", ".jpg", ".jpeg", ".bmp" };
 read_only u32 defaultImgExtensionsCount = ArrayCount(defaultImgExtensions);
 
@@ -278,6 +278,7 @@ main(int argc, char **argv)
     GetAllFilesFromDirAndSubdirs(scratch.arena, searchDir, &infoList);
     u32 imagesCount = 0;
     
+    //- Get image data
     for (FileInfoNode *node = infoList.first; node != 0; node = node->next)
     {
         b32 fileExtensionMatches = 0;
@@ -316,9 +317,18 @@ main(int argc, char **argv)
             // Write to memory
             for (i32 y = 0; y < height; ++y)
             {
+#if 0
                 PixelRGBA *dst = imageAtlas.pixels + ((region.min.y + y)*imageAtlas.size.x) + region.min.x;
                 PixelRGBA *src = pixels + width*y;
                 MemoryCopy(dst, src, regionDims.x * sizeof(PixelRGBA));
+#else
+                for (i32 x = 0; x < width; ++x)
+                {
+                    PixelRGBA *dst = imageAtlas.pixels + ((region.min.y + y)*imageAtlas.size.x) + (region.min.x + x);
+                    PixelRGBA *src = pixels + width*y + x;
+                    *dst = *src;
+                }
+#endif
             }
             
             imagesCount++;
